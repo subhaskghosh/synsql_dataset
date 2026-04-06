@@ -1,0 +1,587 @@
+{
+  "db_id": "3d_object_positioning_and_animation_data",
+  "ddls": [
+    "CREATE TABLE \"scenes\" (\n  \"scene_id\" INTEGER /* Unique identifier for each scene */,\n  \"scene_name\" TEXT /* Name of the scene */,\n  \"description\" TEXT /* Description of the scene */,\n  \"created_at\" TEXT /* Date and time the scene was created */,\n  \"updated_at\" TEXT /* Date and time the scene was last updated */,\n  \"scene_type\" TEXT /* Type of the scene (e.g., indoor, outdoor, action) */,\n  \"status\" TEXT /* Status of the scene (e.g., draft, in progress, completed) */,\n  \"created_by\" INTEGER /* ID of the user who created the scene */,\n  \"updated_by\" INTEGER /* ID of the user who last updated the scene */,\n  \"is_active\" INTEGER /* Flag to indicate if the scene is active */,\n  PRIMARY KEY (\"scene_id\"), \n  CONSTRAINT fk_scenes_updated_by FOREIGN KEY (\"updated_by\") REFERENCES users (\"user_id\"), \n  CONSTRAINT fk_scenes_created_by FOREIGN KEY (\"created_by\") REFERENCES users (\"user_id\")\n)",
+    "CREATE TABLE \"scene_objects\" (\n  \"scene_object_id\" INTEGER /* Unique identifier for each scene-object relationship */,\n  \"scene_id\" INTEGER /* ID of the scene the object belongs to */,\n  \"object_id\" INTEGER /* ID of the object within the scene */,\n  \"object_role\" TEXT /* Role of the object within the scene (e.g., main character, background) */,\n  \"start_time\" TEXT /* Start time of the object's role in the scene */,\n  \"end_time\" TEXT /* End time of the object's role in the scene */,\n  \"status\" TEXT /* Status of the object within the scene (e.g., active, inactive) */,\n  \"created_by\" INTEGER /* ID of the user who added the object to the scene */,\n  \"updated_by\" INTEGER /* ID of the user who last updated the object's role in the scene */,\n  \"is_active\" INTEGER /* Flag to indicate if the object's role in the scene is active */,\n  PRIMARY KEY (\"scene_object_id\"), \n  CONSTRAINT fk_scene_objects_scene_id FOREIGN KEY (\"scene_id\") REFERENCES scenes (\"scene_id\"), \n  CONSTRAINT fk_scene_objects_updated_by FOREIGN KEY (\"updated_by\") REFERENCES users (\"user_id\"), \n  CONSTRAINT fk_scene_objects_created_by FOREIGN KEY (\"created_by\") REFERENCES users (\"user_id\")\n)",
+    "CREATE TABLE \"users\" (\n  \"user_id\" INTEGER /* Unique identifier for each user */,\n  \"user_name\" TEXT /* Full name of the user */,\n  \"email\" TEXT /* Email address of the user */,\n  \"role\" TEXT /* Role of the user (e.g., animator, modeler, admin) */,\n  \"password_hash\" TEXT /* Hashed password for the user */,\n  \"created_at\" TEXT /* Date and time the user account was created */,\n  \"updated_at\" TEXT /* Date and time the user account was last updated */,\n  \"is_active\" INTEGER /* Flag to indicate if the user account is active */,\n  \"last_login\" TEXT /* Date and time of the user's last login */,\n  PRIMARY KEY (\"user_id\")\n)",
+    "CREATE TABLE \"user_actions\" (\n  \"action_id\" INTEGER /* Unique identifier for each user action */,\n  \"user_id\" INTEGER /* ID of the user performing the action */,\n  \"action_type\" TEXT /* Type of action (e.g., create, update, delete) */,\n  \"action_details\" TEXT /* Details of the action performed */,\n  \"action_time\" TEXT /* Date and time the action was performed */,\n  \"scene_id\" INTEGER /* ID of the scene if the action is related to a scene */,\n  \"object_id\" INTEGER /* ID of the object if the action is related to an object */,\n  \"ip_address\" TEXT /* IP address from which the action was performed */,\n  \"user_agent\" TEXT /* User agent string of the device used to perform the action */,\n  PRIMARY KEY (\"action_id\"), \n  CONSTRAINT fk_user_actions_user_id FOREIGN KEY (\"user_id\") REFERENCES users (\"user_id\"), \n  CONSTRAINT fk_user_actions_scene_id FOREIGN KEY (\"scene_id\") REFERENCES scenes (\"scene_id\")\n)",
+    "CREATE TABLE \"animation_types\" (\n  \"type_id\" INTEGER /* Unique identifier for each animation type */,\n  \"type_name\" TEXT /* Name of the animation type */,\n  \"description\" TEXT /* Description of the animation type */,\n  \"created_at\" TEXT /* Date and time the animation type was created */,\n  \"created_by\" INTEGER /* ID of the user who created the animation type */,\n  \"updated_at\" TEXT /* Date and time the animation type was last updated */,\n  \"updated_by\" INTEGER /* ID of the user who last updated the animation type */,\n  \"is_active\" INTEGER /* Flag to indicate if the animation type is active */,\n  PRIMARY KEY (\"type_id\"), \n  CONSTRAINT fk_animation_types_updated_by FOREIGN KEY (\"updated_by\") REFERENCES users (\"user_id\"), \n  CONSTRAINT fk_animation_types_created_by FOREIGN KEY (\"created_by\") REFERENCES users (\"user_id\")\n)",
+    "CREATE TABLE \"object_versions\" (\n  \"version_id\" INTEGER /* Unique identifier for each version of the object */,\n  \"object_id\" INTEGER /* ID of the object being versioned */,\n  \"version_number\" INTEGER /* Version number of the object */,\n  \"version_details\" TEXT /* Details of the changes made in this version */,\n  \"versioned_at\" TEXT /* Date and time the version was created */,\n  \"version_type\" TEXT /* Type of version (e.g., major, minor, patch) */,\n  \"created_by\" INTEGER /* ID of the user who created the version */,\n  \"ip_address\" TEXT /* IP address from which the version was created */,\n  \"user_agent\" TEXT /* User agent string of the device used to create the version */,\n  PRIMARY KEY (\"version_id\"), \n  CONSTRAINT fk_object_versions_created_by FOREIGN KEY (\"created_by\") REFERENCES users (\"user_id\")\n)"
+  ],
+  "column_names": [
+    [
+      -1,
+      "*"
+    ],
+    [
+      0,
+      "Unique identifier for each scene"
+    ],
+    [
+      0,
+      "Name of the scene"
+    ],
+    [
+      0,
+      "Description of the scene"
+    ],
+    [
+      0,
+      "Date and time the scene was created"
+    ],
+    [
+      0,
+      "Date and time the scene was last updated"
+    ],
+    [
+      0,
+      "Type of the scene (e.g., indoor, outdoor, action)"
+    ],
+    [
+      0,
+      "Status of the scene (e.g., draft, in progress, completed)"
+    ],
+    [
+      0,
+      "ID of the user who created the scene"
+    ],
+    [
+      0,
+      "ID of the user who last updated the scene"
+    ],
+    [
+      0,
+      "Flag to indicate if the scene is active"
+    ],
+    [
+      1,
+      "Unique identifier for each scene-object relationship"
+    ],
+    [
+      1,
+      "ID of the scene the object belongs to"
+    ],
+    [
+      1,
+      "ID of the object within the scene"
+    ],
+    [
+      1,
+      "Role of the object within the scene (e.g., main character, background)"
+    ],
+    [
+      1,
+      "Start time of the object's role in the scene"
+    ],
+    [
+      1,
+      "End time of the object's role in the scene"
+    ],
+    [
+      1,
+      "Status of the object within the scene (e.g., active, inactive)"
+    ],
+    [
+      1,
+      "ID of the user who added the object to the scene"
+    ],
+    [
+      1,
+      "ID of the user who last updated the object's role in the scene"
+    ],
+    [
+      1,
+      "Flag to indicate if the object's role in the scene is active"
+    ],
+    [
+      2,
+      "Unique identifier for each user"
+    ],
+    [
+      2,
+      "Full name of the user"
+    ],
+    [
+      2,
+      "Email address of the user"
+    ],
+    [
+      2,
+      "Role of the user (e.g., animator, modeler, admin)"
+    ],
+    [
+      2,
+      "Hashed password for the user"
+    ],
+    [
+      2,
+      "Date and time the user account was created"
+    ],
+    [
+      2,
+      "Date and time the user account was last updated"
+    ],
+    [
+      2,
+      "Flag to indicate if the user account is active"
+    ],
+    [
+      2,
+      "Date and time of the user's last login"
+    ],
+    [
+      3,
+      "Unique identifier for each user action"
+    ],
+    [
+      3,
+      "ID of the user performing the action"
+    ],
+    [
+      3,
+      "Type of action (e.g., create, update, delete)"
+    ],
+    [
+      3,
+      "Details of the action performed"
+    ],
+    [
+      3,
+      "Date and time the action was performed"
+    ],
+    [
+      3,
+      "ID of the scene if the action is related to a scene"
+    ],
+    [
+      3,
+      "ID of the object if the action is related to an object"
+    ],
+    [
+      3,
+      "IP address from which the action was performed"
+    ],
+    [
+      3,
+      "User agent string of the device used to perform the action"
+    ],
+    [
+      4,
+      "Unique identifier for each animation type"
+    ],
+    [
+      4,
+      "Name of the animation type"
+    ],
+    [
+      4,
+      "Description of the animation type"
+    ],
+    [
+      4,
+      "Date and time the animation type was created"
+    ],
+    [
+      4,
+      "ID of the user who created the animation type"
+    ],
+    [
+      4,
+      "Date and time the animation type was last updated"
+    ],
+    [
+      4,
+      "ID of the user who last updated the animation type"
+    ],
+    [
+      4,
+      "Flag to indicate if the animation type is active"
+    ],
+    [
+      5,
+      "Unique identifier for each version of the object"
+    ],
+    [
+      5,
+      "ID of the object being versioned"
+    ],
+    [
+      5,
+      "Version number of the object"
+    ],
+    [
+      5,
+      "Details of the changes made in this version"
+    ],
+    [
+      5,
+      "Date and time the version was created"
+    ],
+    [
+      5,
+      "Type of version (e.g., major, minor, patch)"
+    ],
+    [
+      5,
+      "ID of the user who created the version"
+    ],
+    [
+      5,
+      "IP address from which the version was created"
+    ],
+    [
+      5,
+      "User agent string of the device used to create the version"
+    ]
+  ],
+  "column_names_original": [
+    [
+      -1,
+      "*"
+    ],
+    [
+      0,
+      "scene_id"
+    ],
+    [
+      0,
+      "scene_name"
+    ],
+    [
+      0,
+      "description"
+    ],
+    [
+      0,
+      "created_at"
+    ],
+    [
+      0,
+      "updated_at"
+    ],
+    [
+      0,
+      "scene_type"
+    ],
+    [
+      0,
+      "status"
+    ],
+    [
+      0,
+      "created_by"
+    ],
+    [
+      0,
+      "updated_by"
+    ],
+    [
+      0,
+      "is_active"
+    ],
+    [
+      1,
+      "scene_object_id"
+    ],
+    [
+      1,
+      "scene_id"
+    ],
+    [
+      1,
+      "object_id"
+    ],
+    [
+      1,
+      "object_role"
+    ],
+    [
+      1,
+      "start_time"
+    ],
+    [
+      1,
+      "end_time"
+    ],
+    [
+      1,
+      "status"
+    ],
+    [
+      1,
+      "created_by"
+    ],
+    [
+      1,
+      "updated_by"
+    ],
+    [
+      1,
+      "is_active"
+    ],
+    [
+      2,
+      "user_id"
+    ],
+    [
+      2,
+      "user_name"
+    ],
+    [
+      2,
+      "email"
+    ],
+    [
+      2,
+      "role"
+    ],
+    [
+      2,
+      "password_hash"
+    ],
+    [
+      2,
+      "created_at"
+    ],
+    [
+      2,
+      "updated_at"
+    ],
+    [
+      2,
+      "is_active"
+    ],
+    [
+      2,
+      "last_login"
+    ],
+    [
+      3,
+      "action_id"
+    ],
+    [
+      3,
+      "user_id"
+    ],
+    [
+      3,
+      "action_type"
+    ],
+    [
+      3,
+      "action_details"
+    ],
+    [
+      3,
+      "action_time"
+    ],
+    [
+      3,
+      "scene_id"
+    ],
+    [
+      3,
+      "object_id"
+    ],
+    [
+      3,
+      "ip_address"
+    ],
+    [
+      3,
+      "user_agent"
+    ],
+    [
+      4,
+      "type_id"
+    ],
+    [
+      4,
+      "type_name"
+    ],
+    [
+      4,
+      "description"
+    ],
+    [
+      4,
+      "created_at"
+    ],
+    [
+      4,
+      "created_by"
+    ],
+    [
+      4,
+      "updated_at"
+    ],
+    [
+      4,
+      "updated_by"
+    ],
+    [
+      4,
+      "is_active"
+    ],
+    [
+      5,
+      "version_id"
+    ],
+    [
+      5,
+      "object_id"
+    ],
+    [
+      5,
+      "version_number"
+    ],
+    [
+      5,
+      "version_details"
+    ],
+    [
+      5,
+      "versioned_at"
+    ],
+    [
+      5,
+      "version_type"
+    ],
+    [
+      5,
+      "created_by"
+    ],
+    [
+      5,
+      "ip_address"
+    ],
+    [
+      5,
+      "user_agent"
+    ]
+  ],
+  "column_types": [
+    "text",
+    "INTEGER",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "INTEGER",
+    "INTEGER",
+    "INTEGER",
+    "INTEGER",
+    "INTEGER",
+    "INTEGER",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "INTEGER",
+    "INTEGER",
+    "INTEGER",
+    "INTEGER",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "INTEGER",
+    "TEXT",
+    "INTEGER",
+    "INTEGER",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "INTEGER",
+    "INTEGER",
+    "TEXT",
+    "TEXT",
+    "INTEGER",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "INTEGER",
+    "TEXT",
+    "INTEGER",
+    "INTEGER",
+    "INTEGER",
+    "INTEGER",
+    "INTEGER",
+    "TEXT",
+    "TEXT",
+    "TEXT",
+    "INTEGER",
+    "TEXT",
+    "TEXT"
+  ],
+  "table_names": [
+    "scenes",
+    "scene_objects",
+    "users",
+    "user_actions",
+    "animation_types",
+    "object_versions"
+  ],
+  "table_names_original": [
+    "scenes",
+    "scene_objects",
+    "users",
+    "user_actions",
+    "animation_types",
+    "object_versions"
+  ],
+  "foreign_keys": [
+    [
+      8,
+      21
+    ],
+    [
+      9,
+      21
+    ],
+    [
+      18,
+      21
+    ],
+    [
+      19,
+      21
+    ],
+    [
+      12,
+      1
+    ],
+    [
+      35,
+      1
+    ],
+    [
+      31,
+      21
+    ],
+    [
+      43,
+      21
+    ],
+    [
+      45,
+      21
+    ],
+    [
+      53,
+      21
+    ]
+  ],
+  "primary_keys": [
+    1,
+    11,
+    21,
+    30,
+    39,
+    47
+  ]
+}
